@@ -4,8 +4,16 @@
 <body>
 <form action="/post" method="POST">
 	<h1>Welcome {{username}}</h1> 
-	<input type="text" name = "blog" placeholder="post" required/> </br>
+	<input type="text" name = "photo" placeholder="post" required/> </br>
+	Who can see this photo? 
+	<input type="radio" name="allfollowers" id="option1" value="1" required/> All my followers 
+	<input type="radio" name="allfollowers" id="option2" value="0"required/> Only my groups <br>
+	<input type="text" name = "caption" placeholder="Add a caption..."> </br>
+	Share these to which friend groups: 
+	<input type="text" name = "friendgs" placeholder="comma separated list"> </br>
 	<input type="submit" value = Post />
+
+	
 </form>
 
 <style type="text/css">
@@ -22,8 +30,8 @@ Here are your posts:
 
 {% for line in posts %}
 	<tr>
-		<td>{{line.ts}}</td>
-		<td>{{line.blog_post}}</td>
+		<td>{{line.postingdate}}</td>
+		<td>{{line.filepath}}</td>
 	</tr>
 {% endfor %}
 </table>

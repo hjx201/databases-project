@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
 
+
 #Initialize the app from Flask
 app = Flask(__name__)
 
@@ -62,6 +63,8 @@ def registerAuth():
     #grabs information from the forms
     username = request.form['username']
     password = request.form['password']
+    first = request.form['firstname']
+    last = request.form['lastname']
 
     #cursor used to send queries
     cursor = conn.cursor()
@@ -77,8 +80,8 @@ def registerAuth():
         error = "This user already exists"
         return render_template('register.html', error = error)
     else:
-        ins = 'INSERT INTO person VALUES(%s, %s)'
-        cursor.execute(ins, (username, password))
+        ins = 'INSERT INTO person VALUES(%s, %s, %s, %s, %s)'
+        cursor.execute(ins, (username, password, first, last, ''))
         conn.commit()
         cursor.close()
         return render_template('index.html')
@@ -88,8 +91,11 @@ def registerAuth():
 def home():
     user = session['username']
     cursor = conn.cursor();
-    query = 'SELECT ts, blog_post FROM blog WHERE username = %s ORDER BY ts DESC'
+
+
+    query = 'SELECT postingdate, filepath FROM photo WHERE photoposter = %s ORDER BY postingdate DESC'
     cursor.execute(query, (user))
+    
     data = cursor.fetchall()
     cursor.close()
     return render_template('home.html', username=user, posts=data)
@@ -99,9 +105,32 @@ def home():
 def post():
     username = session['username']
     cursor = conn.cursor();
-    blog = request.form['blog']
-    query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
-    cursor.execute(query, (blog, username))
+    photo = request.form['photo']
+    caption = request.form['caption']
+    allfollow = request.form['allfollowers']
+    friendgs = request.form['friendgs']
+    if allfollow == '1':
+        alf = 1
+    else:
+        alf = 0
+
+    friendgroups = friendgs.strip().split(',')
+    
+    query = 'INSERT INTO photo (postingdate, filepath,allFollowers,caption,photoPoster) VALUES(NOW(), %s, %s, %s, %s)'
+    cursor.execute(query, (photo, alf, caption, username))
+
+    query = "SELECT photoID FROM Photo where photoposter = '" + username + "' ORDER BY photoID DESC LIMIT 1;"
+    cursor.execute(query)
+    photoid = cursor.fetchall()
+    
+    for f in friendgroups:
+        query = "SELECT owner_username from BelongTo where groupName = '" + f + "' and member_username = '" + username + "' or owner_username = '" + username + "';"
+        cursor.execute(query)
+        groupowner = cursor.fetchall()
+        if groupowner:
+            query = "INSERT INTO SharedWith VALUES (%s, %s, %s)"
+            cursor.execute(query, (groupowner, f, photoid))
+
     conn.commit()
     cursor.close()
     return redirect(url_for('home'))
