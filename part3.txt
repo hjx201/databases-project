@@ -1,0 +1,9 @@
+//%s is username
+
+
+SELECT photoid 
+FROM photo as p
+WHERE AllFollowers = True AND 
+EXISTS ((SELECT username_follower FROM follow WHERE username_follower = %s AND username_followed = p.photoPoster AND followstatus = True) 
+OR 
+p.photoid IN (SELECT p.photoid FROM SharedWith NATURAL JOIN BelongTo WHERE member_username = %s))
