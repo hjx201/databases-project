@@ -4,7 +4,7 @@
 <body>
 <form action="/post" method="POST">
 	<h1>Welcome {{username}}</h1> 
-	<input type="text" name = "photo" placeholder="post" required/> </br>
+	<input type="text" name = "photo" placeholder="post" required/> <br>
 	Who can see this photo? 
 	<input type="radio" name="allfollowers" id="option1" value="1" required/> All my followers 
 	<input type="radio" name="allfollowers" id="option2" value="0"required/> Only my groups <br>
@@ -12,9 +12,18 @@
 	Share these to which friend groups: 
 	<input type="text" name = "friendgs" placeholder="comma separated list"> </br>
 	<input type="submit" value = Post />
-
 	
 </form>
+
+
+<br>
+These are the friend groups you can post to:
+<br>
+{% for i in groups %}
+{{i.groupName}}<br>
+{% endfor %}
+<br>
+<br>
 
 <style type="text/css">
 	table, th, td{
@@ -27,16 +36,24 @@ Here are your posts:
 <table>
 	<th>Time</th>
 	<th>Post</th>
+	<th>Visiblility</th>
+	<th>More info?</th>
 
 {% for line in posts %}
 	<tr>
 		<td>{{line.postingdate}}</td>
-		<td>{{line.filepath}}</td>
+		<td><img src = {{line.filepath}} width = 250></td>
+		<td>
+		{{line.allFollowers}}
+		</td>
+		<td><a href="/moreinfo/{{line.photoID}}">View</a></td>
 	</tr>
 {% endfor %}
 </table>
 
-<a href="/select_blogger">Select a blogger</a>
+<a href="/visible">View others' photos</a>
+<br>
+<a href="/follows">Manage Follows</a>
 <br>
 <a href="/logout">Logout</a>
 

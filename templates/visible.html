@@ -1,0 +1,51 @@
+<html>
+<head>
+</head>
+<body>
+
+{% if error %}
+	<p> {{error}}
+	<br>
+	<a href="/login">Login</a>
+		</p>
+	
+{% else %}
+<p>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
+Posts visible to you:
+
+<table>
+	<th>PhotoID</th>
+	<th>Poster</th>
+	<th>Preview</th>
+	<th>More info?</th>
+
+	<!--add possible column for file path?-->
+
+{% for line in visibles %}
+	<tr>
+		<td>{{line.photoID}}</td>
+		<td>{{line.photoPoster}}</td>
+		<td><img src={{line.filepath}} width=150></td>
+		<td><a href="/moreinfo/{{line.photoID}}">View</a></td>
+	</tr>
+{% endfor %}
+</table>
+
+<a href="/home">Back to Home</a>
+<br>
+<a href="/logout">Logout</a>
+
+</p>
+{% endif %}
+
+</body>
+
+
+</html>

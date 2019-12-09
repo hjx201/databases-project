@@ -1,0 +1,31 @@
+<html>
+<head>
+</head>
+<body>
+
+<h3>Manage follows</h3>
+<br>
+
+<form action="/sendfollow" method="POST">
+Send a follow request to the following user: 
+	<input type="text" name = "fuser" placeholder="Enter username" required/> <br>
+	<input type="submit" value = Follow /> <br>
+	{% if error %}
+		<p class="error"><strong>Error:</strong> {{error}}</p>
+	{% endif %}
+</form>
+
+<br>
+Your follow requests:
+{% for f in requests %}
+<br>
+{{f.username_follower}}  <a href = "/acceptfollow/{{f.username_follower}}">Accept</a> <a href = "/declinefollow/{{f.username_follower}}">Decline</a>
+{% endfor %}
+
+
+<br>
+<a href="/home">Home</a>
+<br>
+<a href="/logout">Logout</a>
+</body>
+</html>

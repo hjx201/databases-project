@@ -1,0 +1,64 @@
+<html>
+<head>
+</head>
+<body>
+
+{% if error %}
+	<p class="error"><strong>Error:</strong> {{error}}</p>
+	
+{% else %}
+	<p>
+{% for line in post %}
+<img src = "{{line.filepath}}" height=300>
+<br>
+{{line.caption}}
+<br>
+Time posted: {{line.postingdate}}
+<br>
+
+
+{% for n in name %}
+Poster: {{n.firstName}} {{n.lastName}}
+{% endfor %}
+
+<br><br>
+People tagged in this photo:
+{% for t in tagged %}
+<br>
+{{t.username}}
+{% endfor %}
+
+<br><br>
+People who liked this photo:
+{% for l in liked %}
+<br>
+{{l.username}} (rating: {{l.rating}})
+{% endfor %}
+<br>
+<br>
+
+<form action="/addtag/{{line.photoID}}" method = "POST">
+Add a tag: <input type="text" name = "tag" placeholder="Enter username" required/>
+<input type="submit" value = Tag />
+</form>
+
+{% for s in tagReq %}
+You have been tagged in this photo! <a href = "/acceptTag/{{line.photoID}}">Accept</a> <a href = "/declineTag/{{line.photoID}}">Decline</a>
+{% endfor %}
+
+
+{% endfor %}
+
+	</p>
+{% endif %}
+
+<br>
+<br>
+<a href="/home">Home</a>
+<br>
+<a href="/logout">Logout</a>
+
+</body>
+
+
+</html>
