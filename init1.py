@@ -252,7 +252,7 @@ def sendfollow():
     if(data):
         error = "Follow request already sent"
         cursor.close()
-        return  redirect(url_for('follows'))
+        return redirect(url_for('follows'))
     else:
         query = 'INSERT INTO follow VALUES(%s, %s, False)'
         cursor.execute(query, (fuser, username))
@@ -311,22 +311,20 @@ def post():
     
     query = "SELECT photoID FROM Photo where photoposter = '" + username + "' ORDER BY photoID DESC LIMIT 1;"
     cursor.execute(query)
-    photoid = cursor.fetchall()
+    photoid = cursor.fetchone()
 
     i = 0;
     
     while(i < len(friendgroups)):
         query = "SELECT DISTINCT owner_username FROM BelongTo WHERE groupName = %s AND member_username = %s;"
         cursor.execute(query, (friendgroups[i], username))
-        groupowner = cursor.fetchall()
+        groupowner = cursor.fetchone()
         
         print ("groupowner: ")
         print(groupowner)
         
-        for g in groupowner:
-            query = "INSERT INTO sharedwith VALUES (%s, %s, %s)"
-            for p in photoid:
-                cursor.execute(query, (g['owner_username'], friendgroups[i], p['photoID']))
+        query = "INSERT INTO sharedwith VALUES (%s, %s, %s)"
+        cursor.execute(query, (groupowner['owner_username'], friendgroups[i], photoid['photoID']))
                 
         i+=1
     conn.commit()
