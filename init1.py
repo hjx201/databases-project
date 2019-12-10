@@ -312,21 +312,22 @@ def post():
     query = "SELECT photoID FROM Photo where photoposter = '" + username + "' ORDER BY photoID DESC LIMIT 1;"
     cursor.execute(query)
     photoid = cursor.fetchone()
-
-    i = 0;
     
-    while(i < len(friendgroups)):
-        query = "SELECT DISTINCT owner_username FROM BelongTo WHERE groupName = %s AND member_username = %s;"
-        cursor.execute(query, (friendgroups[i], username))
-        groupowner = cursor.fetchone()
+
+    for f in friendgroups:
+        if (f):
+            query = "SELECT DISTINCT owner_username FROM BelongTo WHERE groupName = %s AND member_username = %s;"
+            cursor.execute(query, (f, username))
+            groupowner = cursor.fetchone()
         
-        print ("groupowner: ")
-        print(groupowner)
+            print ("groupowner: ")
+            print(groupowner)
+            print(photoid)
+            print(f)
         
-        query = "INSERT INTO sharedwith VALUES (%s, %s, %s)"
-        cursor.execute(query, (groupowner['owner_username'], friendgroups[i], photoid['photoID']))
+            query = "INSERT INTO sharedwith VALUES (%s, %s, %s)"
+            cursor.execute(query, (groupowner['owner_username'], f, photoid['photoID']))
                 
-        i+=1
     conn.commit()
     cursor.close()
     return redirect(url_for('home'))
